@@ -1,25 +1,37 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+import Home from './components/Home';
+import Settings from './components/Settings';
+import Board from './components/Board';
+import Boards from './components/Boards';
+
+function App({ isLogin }) {
+  return !isLogin ? (
+    <Switch>
+      <Route exact path="/">
+        <Home />
+      </Route>
+      <Route path="/">
+        <Redirect to="/" />
+      </Route>
+    </Switch>
+  ) : (
+    <Switch>
+      <Route exact path="/">
+        <Redirect to="/boards" />
+      </Route>
+      <Route exact path="/boards">
+        <Boards />
+      </Route>
+      <Route exact path="/boards/:board_id">
+        <Board />
+      </Route>
+      <Route path="/settings">
+        <Settings />
+      </Route>
+      <Route path="/">Not found</Route>
+    </Switch>
   );
 }
 

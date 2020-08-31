@@ -9,7 +9,6 @@ function Boards({ BOARDS_DATA, setBOARDS_DATA }) {
   const [isBoardEditing, setIsBoardEditing] = useState(false);
   const [isBoardAdding, setIsBoardAdding] = useState(false);
   const [newBoardTitle, setNewBoardTitle] = useState('');
-  const [newBoardDesc, setNewBoardDesc] = useState('');
 
   return (
     <>
@@ -38,11 +37,6 @@ function Boards({ BOARDS_DATA, setBOARDS_DATA }) {
                 onChange={(e) => setNewBoardTitle(e.target.value)}
               />
               <input
-                value={newBoardDesc}
-                placeholder="상세내용"
-                onChange={(e) => setNewBoardDesc(e.target.value)}
-              />
-              <input
                 type="button"
                 value="추가완료"
                 onClick={() => {
@@ -55,11 +49,9 @@ function Boards({ BOARDS_DATA, setBOARDS_DATA }) {
                     {
                       id: newBoardTitleId,
                       title: newBoardTitle,
-                      description: newBoardDesc,
                     },
                   ]);
                   setIsBoardAdding(false);
-                  console.log(BOARDS_DATA);
                 }}
               />
             </>

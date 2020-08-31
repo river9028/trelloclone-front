@@ -2,11 +2,11 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import Menu from './Menu';
-import { BOARDS_DATA } from '../FAKE_DATA.json';
+import connect from '../containers/connect';
 
 import BoardContents from './BoardContents';
 
-function Board() {
+function Board({ BOARDS_DATA }) {
   const params = useParams();
   const [selectedBoard] = BOARDS_DATA.filter(
     (board) => board.id === params.board_id,
@@ -23,4 +23,4 @@ function Board() {
   );
 }
 
-export default Board;
+export default connect(Board);

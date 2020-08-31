@@ -16,6 +16,9 @@ export default createStore((state, action) => {
   if (action.type === 'SIGNOUT') {
     return { ...state, isLogin: action.isLogin };
   }
+  if (action.type === 'SETBOARDS_DATA') {
+    return { ...state, BOARDS_DATA: action.BOARDS_DATA };
+  }
   if (action.type === 'SETBOARD_CONTENTS') {
     return { ...state, BOARD_CONTENTS: action.BOARD_CONTENTS };
   }

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import Menu from './Menu';
 import connect from '../containers/connect';
+import { MdDelete } from 'react-icons/md';
 
 import BoardContents from './BoardContents';
 
@@ -19,6 +20,31 @@ const InputContainer = styled.input`
   }
 `;
 
+const RemoveContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #dee2e6;
+  font-size: 24px;
+  cursor: pointer;
+  opacity: 0;
+  &:hover {
+    color: #ff6b6b;
+  }
+`;
+
+const TitleContainer = styled.h2`
+  display: flex;
+  align-items: center;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  &:hover {
+    ${RemoveContainer} {
+      opacity: 1;
+    }
+  }
+`;
+
 function Board({ BOARDS_DATA, setBOARDS_DATA }) {
   const [isTitleEditing, setIsTitleEditing] = useState(false);
   const [newBoardTitle, setNewBoardTitle] = useState('');
@@ -29,14 +55,14 @@ function Board({ BOARDS_DATA, setBOARDS_DATA }) {
     (board) => board.id === params.board_id,
   );
 
-  const aceessNewPage = (route) => {
+  const aceessNewPage = (route = '') => {
     history.push(`/boards/${route}`);
   };
 
   return (
     <>
       <Menu />
-      <h2
+      <TitleContainer
         onDoubleClick={() => {
           setIsTitleEditing(true);
         }}
@@ -73,7 +99,20 @@ function Board({ BOARDS_DATA, setBOARDS_DATA }) {
             />
           </>
         )}
-      </h2>
+        <RemoveContainer
+          onClick={() => {
+            if (window.confirm('삭제하시겠습니까?')) {
+              const newBOARDS_DATA = BOARDS_DATA.filter(
+                (board) => board.id !== params.board_id,
+              );
+              setBOARDS_DATA(newBOARDS_DATA);
+              aceessNewPage();
+            }
+          }}
+        >
+          <MdDelete />
+        </RemoveContainer>
+      </TitleContainer>
       <div>
         <BoardContents />
       </div>

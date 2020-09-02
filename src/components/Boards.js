@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 
 import Menu from './Menu';
 import connect from '../containers/connect';
-import { BOARDS_DATA } from '../FAKE_DATA.json';
 
 function Boards({ BOARDS_DATA, setBOARDS_DATA }) {
   const [isBoardEditing, setIsBoardEditing] = useState(false);
@@ -13,7 +12,6 @@ function Boards({ BOARDS_DATA, setBOARDS_DATA }) {
   return (
     <>
       <Menu />
-      <h2>Boards</h2>
       <ul>
         {BOARDS_DATA.map((board) => (
           <li key={board.id}>

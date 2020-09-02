@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 
 const mapReduxStateToReactProps = (state) => {
   return {
+    pageTitle: state.pageTitle,
     BOARDS_DATA: state.BOARDS_DATA,
     BOARD_CONTENTS: state.BOARD_CONTENTS,
   };
@@ -14,6 +15,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     setBOARD_CONTENTS: (BOARD_CONTENTS) => {
       dispatch({ type: 'SETBOARD_CONTENTS', BOARD_CONTENTS });
+    },
+    setPageTitle: (pageTitle) => {
+      dispatch({ type: 'SET_PAGETITLE', pageTitle });
     },
   };
 };

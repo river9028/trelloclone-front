@@ -6,7 +6,6 @@ function Settings() {
   return (
     <>
       <Menu />
-      <h2>Settings</h2>
     </>
   );
 }

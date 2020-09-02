@@ -7,6 +7,8 @@ export default createStore((state, action) => {
     return {
       isLogin: true,
       pageTitle: 'Boards',
+      isTitleEditing: false,
+      newBoardTitle: '',
       BOARDS_DATA: FAKE_DATA.BOARDS_DATA,
       BOARD_CONTENTS: FAKE_DATA.BOARD_CONTENTS,
     };
@@ -25,5 +27,11 @@ export default createStore((state, action) => {
   }
   if (action.type === 'SET_PAGETITLE') {
     return { ...state, pageTitle: action.pageTitle };
+  }
+  if (action.type === 'SET_ISTITLEEDITING') {
+    return { ...state, isTitleEditing: action.isTitleEditing };
+  }
+  if (action.type === 'SET_NEWTITLE') {
+    return { ...state, newBoardTitle: action.newBoardTitle };
   }
 }, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());

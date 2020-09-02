@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 const mapReduxStateToReactProps = (state) => {
   return {
     pageTitle: state.pageTitle,
+    isTitleEditing: state.isTitleEditing,
+    newBoardTitle: state.newBoardTitle,
     BOARDS_DATA: state.BOARDS_DATA,
     BOARD_CONTENTS: state.BOARD_CONTENTS,
   };
@@ -18,6 +20,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     setPageTitle: (pageTitle) => {
       dispatch({ type: 'SET_PAGETITLE', pageTitle });
+    },
+    setIsTitleEditing: (isTitleEditing) => {
+      dispatch({ type: 'SET_ISTITLEEDITING', isTitleEditing });
+    },
+    setNewBoardTitle: (newBoardTitle) => {
+      dispatch({ type: 'SET_NEWTITLE', newBoardTitle });
     },
   };
 };

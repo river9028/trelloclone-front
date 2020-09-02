@@ -3,9 +3,8 @@ import { NavLink } from 'react-router-dom';
 
 import Menu from './Menu';
 import connect from '../containers/connect';
-import { BOARDS_DATA } from '../FAKE_DATA.json';
 
-function Boards({ BOARDS_DATA, setBOARDS_DATA }) {
+function Boards({ setPageTitle, BOARDS_DATA, setBOARDS_DATA }) {
   const [isBoardEditing, setIsBoardEditing] = useState(false);
   const [isBoardAdding, setIsBoardAdding] = useState(false);
   const [newBoardTitle, setNewBoardTitle] = useState('');
@@ -13,11 +12,17 @@ function Boards({ BOARDS_DATA, setBOARDS_DATA }) {
   return (
     <>
       <Menu />
-      <h2>Boards</h2>
       <ul>
         {BOARDS_DATA.map((board) => (
           <li key={board.id}>
-            <NavLink to={`/boards/${board.id}`}>{board.title}</NavLink>
+            <NavLink
+              to={`/boards/${board.id}`}
+              onClick={() => {
+                setPageTitle(board.title);
+              }}
+            >
+              {board.title}
+            </NavLink>
           </li>
         ))}
         <li>

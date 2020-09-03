@@ -1,6 +1,21 @@
 import React, { useState } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
+
+import { makeStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Tooltip from '@material-ui/core/Tooltip';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 // import { BOARD_CONTENTS } from '../FAKE_DATA.json';
 import Column from './Column';
 import connect from '../containers/connect';
@@ -8,7 +23,33 @@ import Board from './Board';
 
 const Container = styled.div`
   display: flex;
+  overflow-y: scroll;
 `;
+
+const useStyles = makeStyles((theme) => ({
+  columnContainer: {
+    margin: 8,
+    border: 1,
+    background: 'white',
+    borderRadius: 2,
+    minWidth: 300,
+    maxWidth: 300,
+    display: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'column',
+  },
+  fab: {
+    background: 'linear-gradient(45deg, #3ac569 30%, #cff09e 90%)',
+  },
+  textfield: {
+    '& label.Mui-focused': {
+      color: '#3ac569',
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: '#3ac569',
+    },
+  },
+}));
 
 const ColumnContainer = styled.div`
   margin: 8px;
@@ -16,7 +57,6 @@ const ColumnContainer = styled.div`
   background-color: white;
   border-radius: 2px;
   width: 220px;
-
   display: flex;
   flex-direction: column;
 `;
@@ -60,6 +100,7 @@ function BoardContents({ BOARD_CONTENTS, setBOARD_CONTENTS }) {
   //   document.body.style.backgroundColor = `rgba(153, 141, 217, ${opacity})`;
   // };
 
+  const classes = useStyles();
   const onDragEnd = (result) => {
     // setState({
     //   ...state,
@@ -155,7 +196,11 @@ function BoardContents({ BOARD_CONTENTS, setBOARD_CONTENTS }) {
     >
       <Droppable droppableId="all-columns" direction="horizontal" type="column">
         {(provided) => (
-          <Container {...provided.droppableProps} ref={provided.innerRef}>
+          <Container
+            style={{ overflow: 'auto' }}
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+          >
             {BOARD_CONTENTS.columnOrder.map((columnId, index) => {
               const column = BOARD_CONTENTS.columns[columnId];
               const tasks = column.taskIds.map(
@@ -175,8 +220,84 @@ function BoardContents({ BOARD_CONTENTS, setBOARD_CONTENTS }) {
               );
             })}
             {provided.placeholder}
-            <ColumnContainer>
-              {isColumnAdding ? (
+            <Paper className={classes.columnContainer} elevation={0}>
+              <Tooltip
+                title="Add"
+                aria-label="add"
+                onClick={() => setIsColumnAdding(true)}
+              >
+                <Fab className={classes.fab}>
+                  <AddIcon />
+                </Fab>
+              </Tooltip>
+              <Dialog
+                open={isColumnAdding}
+                onClose={() => {}}
+                aria-labelledby="form-dialog-title"
+              >
+                <DialogTitle
+                  style={{ color: '#3ac569' }}
+                  id="form-dialog-title"
+                >
+                  New Column
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    새로 만들 칼럼의 제목을 입력하세요
+                  </DialogContentText>
+                  <TextField
+                    className={classes.textfield}
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Column Title"
+                    type="text"
+                    fullWidth
+                    onChange={(e) => {
+                      setNewColumnTitle(e.target.value);
+                    }}
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    style={{ color: '#3ac569' }}
+                    onClick={() => setIsColumnAdding(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    style={{ color: '#3ac569' }}
+                    onClick={() => {
+                      const newColumId =
+                        'column-' + (BOARD_CONTENTS.lastColumnNumber + 1);
+
+                      const newColum = {
+                        id: newColumId,
+                        title: newColumnTitle,
+                        taskIds: [],
+                      };
+
+                      setBOARD_CONTENTS({
+                        ...BOARD_CONTENTS,
+                        lastColumnNumber: BOARD_CONTENTS.lastColumnNumber + 1,
+                        columns: {
+                          ...BOARD_CONTENTS.columns,
+                          [newColumId]: newColum,
+                        },
+                        columnOrder: [
+                          ...BOARD_CONTENTS.columnOrder,
+                          newColumId,
+                        ],
+                      });
+                      setIsColumnAdding(false);
+                      setIsColumnAdding(false);
+                    }}
+                  >
+                    Create
+                  </Button>
+                </DialogActions>
+              </Dialog>
+              {/* {isColumnAdding ? (
                 <>
                   <InputContainer
                     value={newColumnTitle}
@@ -221,8 +342,8 @@ function BoardContents({ BOARD_CONTENTS, setBOARD_CONTENTS }) {
                     setIsColumnAdding(true);
                   }}
                 />
-              )}
-            </ColumnContainer>
+              )} */}
+            </Paper>
           </Container>
         )}
       </Droppable>

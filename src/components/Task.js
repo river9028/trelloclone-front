@@ -2,9 +2,16 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
 
+import Paper from '@material-ui/core/Paper';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+
 import connect from '../containers/connect';
 
 const Container = styled.div`
+  whitespace: 'normal';
+  wordbreak: 'normal';
   font-size: 16px;
   border: 3px solid lightgrey;
   // border-radius: 2px;
@@ -67,31 +74,7 @@ function Task({ task, index, column, BOARD_CONTENTS, setBOARD_CONTENTS }) {
   const [taskContent, setTaskContent] = useState(task.content);
 
   // const isDragDisabled = this.props.task.id === 'task-1';
-  return isEdit ? (
-    <>
-      <InputContainer
-        type="text"
-        value={taskContent}
-        onChange={(e) => setTaskContent(e.target.value)}
-      />
-      <input
-        type="button"
-        value="수정완료"
-        onClick={() => {
-          const newTasks = {
-            ...BOARD_CONTENTS.tasks,
-            [task.id]: { id: task.id, content: taskContent },
-          };
-
-          setBOARD_CONTENTS({
-            ...BOARD_CONTENTS,
-            tasks: newTasks,
-          });
-          setIsEdit(false);
-        }}
-      />
-    </>
-  ) : (
+  return (
     <Draggable
       // key={this.props.task.id}
       draggableId={task.id}
@@ -107,35 +90,85 @@ function Task({ task, index, column, BOARD_CONTENTS, setBOARD_CONTENTS }) {
           isDragDisabled={null}
         >
           {/* <Handle {...provided.dragHandleProps} /> */}
-          {taskContent}
-          {taskContent}
-          {/* 수정 삭제 버튼 */}
-          <input type="button" value="수정" onClick={() => setIsEdit(true)} />
-          <input
-            type="button"
-            value="삭제"
-            onClick={() => {
-              const newTasks = {
-                ...BOARD_CONTENTS.tasks,
-              };
-              delete newTasks[task.id];
+          {isEdit ? (
+            <>
+              <InputContainer
+                autoFocus
+                type="text"
+                value={taskContent}
+                onBlur={() => setIsEdit(false)}
+                onChange={(e) => setTaskContent(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    const newTasks = {
+                      ...BOARD_CONTENTS.tasks,
+                      [task.id]: { id: task.id, content: taskContent },
+                    };
 
-              const newColumns = {
-                ...BOARD_CONTENTS.columns,
-                [column.id]: {
-                  ...BOARD_CONTENTS.columns[column.id],
-                  taskIds: BOARD_CONTENTS.columns[column.id].taskIds.filter(
-                    (taskId) => taskId !== task.id,
-                  ),
-                },
-              };
-              setBOARD_CONTENTS({
-                ...BOARD_CONTENTS,
-                tasks: newTasks,
-                columns: newColumns,
-              });
+                    setBOARD_CONTENTS({
+                      ...BOARD_CONTENTS,
+                      tasks: newTasks,
+                    });
+                    setIsEdit(false);
+                  }
+                }}
+              />
+              {/* <input
+        type="button"
+        value="수정완료"
+        onClick={() => {
+          const newTasks = {
+            ...BOARD_CONTENTS.tasks,
+            [task.id]: { id: task.id, content: taskContent },
+          };
+
+          setBOARD_CONTENTS({
+            ...BOARD_CONTENTS,
+            tasks: newTasks,
+          });
+          setIsEdit(false);
+        }}
+      /> */}
+            </>
+          ) : (
+            taskContent
+          )}
+          <div
+            style={{
+              position: 'relative',
             }}
-          />
+          >
+            <div style={{ textAlign: 'right' }}>
+              <IconButton onClick={() => setIsEdit(true)}>
+                <EditIcon />
+              </IconButton>
+              <IconButton
+                onClick={() => {
+                  const newTasks = {
+                    ...BOARD_CONTENTS.tasks,
+                  };
+                  delete newTasks[task.id];
+
+                  const newColumns = {
+                    ...BOARD_CONTENTS.columns,
+                    [column.id]: {
+                      ...BOARD_CONTENTS.columns[column.id],
+                      taskIds: BOARD_CONTENTS.columns[column.id].taskIds.filter(
+                        (taskId) => taskId !== task.id,
+                      ),
+                    },
+                  };
+                  setBOARD_CONTENTS({
+                    ...BOARD_CONTENTS,
+                    tasks: newTasks,
+                    columns: newColumns,
+                  });
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </div>
+          </div>
         </Container>
       )}
     </Draggable>

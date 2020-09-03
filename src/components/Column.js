@@ -10,6 +10,13 @@ import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
 
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 import Task from './Task';
 import connect from '../containers/connect';
 
@@ -56,7 +63,7 @@ const TaskList = styled.div`
     padding: 8px;
     transition = backgrond-color 0.2s ease;
     background-color: ${(props) =>
-      props.isDraggingOver ? 'skyblue' : 'inherit'};
+      props.isDraggingOver ? '#C5E99B' : 'inherit'};
     flex-grow: 1;
     min-height: 100px;
 
@@ -112,6 +119,7 @@ function Column({
   const [isTaskAdding, setIsTaskAdding] = useState(false);
   const [newTaskContent, setNewTaskContent] = useState('');
   const [columnTitle, setColumnTitle] = useState(column.title);
+  const [open, setOpen] = useState(false);
 
   const classes = useStyles();
   return (
@@ -180,23 +188,50 @@ function Column({
 
               <RemoveContainer
                 onClick={() => {
-                  if (window.confirm('삭제하시겠습니까?')) {
-                    const newColumns = Object.assign(BOARD_CONTENTS.columns);
-                    delete newColumns[column.id];
-
-                    const newColumnsOrder = BOARD_CONTENTS.columnOrder.filter(
-                      (columnId) => columnId !== column.id,
-                    );
-                    setBOARD_CONTENTS({
-                      ...BOARD_CONTENTS,
-                      columns: newColumns,
-                      columnOrder: newColumnsOrder,
-                    });
-                  }
+                  setOpen(true);
                 }}
               >
                 <DeleteIcon />
               </RemoveContainer>
+              <Dialog
+                open={open}
+                onClose={() => setOpen(false)}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+              >
+                <DialogTitle id="alert-dialog-title">
+                  {'선택한 Column을 삭제하시겠습니까?'}
+                </DialogTitle>
+                <DialogActions>
+                  <Button
+                    style={{ color: '#3ac569' }}
+                    onClick={() => {}}
+                    color="primary"
+                  >
+                    No
+                  </Button>
+                  <Button
+                    style={{ color: '#3ac569' }}
+                    onClick={() => {
+                      const newColumns = Object.assign(BOARD_CONTENTS.columns);
+                      delete newColumns[column.id];
+
+                      const newColumnsOrder = BOARD_CONTENTS.columnOrder.filter(
+                        (columnId) => columnId !== column.id,
+                      );
+                      setBOARD_CONTENTS({
+                        ...BOARD_CONTENTS,
+                        columns: newColumns,
+                        columnOrder: newColumnsOrder,
+                      });
+                    }}
+                    color="primary"
+                    autoFocus
+                  >
+                    Yes
+                  </Button>
+                </DialogActions>
+              </Dialog>
               {/* <input
                 type="button"
                 value="column 삭제"
@@ -258,53 +293,53 @@ function Column({
                   // />
                   <>
                     <InputContainer
+                      autoFocus
                       value={newTaskContent}
                       onChange={(e) => setNewTaskContent(e.target.value)}
-                    />
-                    <input
-                      type="button"
-                      value="추가완료"
-                      onClick={() => {
-                        const newTaskId =
-                          'task-' + (BOARD_CONTENTS.lastTaskNumber + 1);
+                      onBlur={() => setIsTaskAdding(false)}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          const newTaskId =
+                            'task-' + (BOARD_CONTENTS.lastTaskNumber + 1);
 
-                        const newTasks = {
-                          ...BOARD_CONTENTS.tasks,
-                          [newTaskId]: {
-                            id: newTaskId,
-                            content: newTaskContent,
-                          },
-                        };
+                          const newTasks = {
+                            ...BOARD_CONTENTS.tasks,
+                            [newTaskId]: {
+                              id: newTaskId,
+                              content: newTaskContent,
+                            },
+                          };
 
-                        const newTaskIds = Array.from(
-                          BOARD_CONTENTS.columns[column.id].taskIds,
-                        );
-                        newTaskIds.push(newTaskId);
+                          const newTaskIds = Array.from(
+                            BOARD_CONTENTS.columns[column.id].taskIds,
+                          );
+                          newTaskIds.push(newTaskId);
 
-                        const newColumns = {
-                          ...BOARD_CONTENTS.columns,
-                          [column.id]: {
-                            ...BOARD_CONTENTS.columns[column.id],
-                            taskIds: newTaskIds,
-                          },
-                        };
+                          const newColumns = {
+                            ...BOARD_CONTENTS.columns,
+                            [column.id]: {
+                              ...BOARD_CONTENTS.columns[column.id],
+                              taskIds: newTaskIds,
+                            },
+                          };
 
-                        console.log({
-                          ...BOARD_CONTENTS,
-                          lastTaskNumber: BOARD_CONTENTS.lastTaskNumber + 1,
-                          tasks: newTasks,
-                          columns: newColumns,
-                        });
+                          console.log({
+                            ...BOARD_CONTENTS,
+                            lastTaskNumber: BOARD_CONTENTS.lastTaskNumber + 1,
+                            tasks: newTasks,
+                            columns: newColumns,
+                          });
 
-                        setBOARD_CONTENTS({
-                          ...BOARD_CONTENTS,
-                          lastTaskNumber: BOARD_CONTENTS.lastTaskNumber + 1,
-                          tasks: newTasks,
-                          columns: newColumns,
-                        });
+                          setBOARD_CONTENTS({
+                            ...BOARD_CONTENTS,
+                            lastTaskNumber: BOARD_CONTENTS.lastTaskNumber + 1,
+                            tasks: newTasks,
+                            columns: newColumns,
+                          });
 
-                        setNewTaskContent('');
-                        setIsTaskAdding(false);
+                          setNewTaskContent('');
+                          setIsTaskAdding(false);
+                        }
                       }}
                     />
                   </>

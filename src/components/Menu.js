@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -155,8 +156,10 @@ function Menu({
               </div>
             ) : (
               <div className={classes.title}>
-                <InputContainer
+                <TextField
+                  autoFocus
                   value={newBoardTitle}
+                  onBlur={() => setIsTitleEditing(false)}
                   onChange={(e) => {
                     setNewBoardTitle(e.target.value);
                   }}

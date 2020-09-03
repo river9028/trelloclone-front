@@ -35,8 +35,8 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 300,
     maxWidth: 300,
     display: 'flex',
-    flexDirection: 'column',
     justifyContent: 'center',
+    flexDirection: 'column',
   },
   fab: {
     background: 'linear-gradient(45deg, #3ac569 30%, #cff09e 90%)',

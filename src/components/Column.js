@@ -1,12 +1,32 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 
 import Paper from '@material-ui/core/Paper';
-import { withStyles } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
+import TextField from '@material-ui/core/TextField';
 
 import Task from './Task';
 import connect from '../containers/connect';
+
+const useStyles = makeStyles((theme) => ({
+  icon: {
+    background: 'white',
+    color: '#3ac569',
+  },
+  textfield: {
+    '& label.Mui-focused': {
+      color: '#3ac569',
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: '#3ac569',
+    },
+  },
+}));
 
 const CssPaper = withStyles({
   root: {
@@ -31,9 +51,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
 `;
-const Title = styled.h3`
-  padding: 8px;
-`;
+
 const TaskList = styled.div`
     padding: 8px;
     transition = backgrond-color 0.2s ease;
@@ -57,6 +75,31 @@ const InputContainer = styled.input`
   }
 `;
 
+const RemoveContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #dee2e6;
+  font-size: 24px;
+  cursor: pointer;
+  opacity: 0;
+  &:hover {
+    color: #ff6b6b;
+  }
+`;
+
+const TitleContainer = styled.h3`
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  color: #3ac569;
+  &:hover {
+    ${RemoveContainer} {
+      opacity: 1;
+    }
+  }
+`;
+
 function Column({
   column,
   index,
@@ -70,6 +113,7 @@ function Column({
   const [newTaskContent, setNewTaskContent] = useState('');
   const [columnTitle, setColumnTitle] = useState(column.title);
 
+  const classes = useStyles();
   return (
     <Draggable draggableId={column.id} index={index}>
       {(provided, snapshot) => (
@@ -80,14 +124,36 @@ function Column({
         >
           {isTaskEditing ? (
             <>
-              <InputContainer
-                type="text"
+              <TextField
+                autoFocus
+                style={{
+                  padding: 25,
+                }}
                 value={columnTitle}
                 onChange={(e) => {
                   setColumnTitle(e.target.value);
                 }}
+                onBlur={() => {
+                  setIsTaskEditing(false);
+                }}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    const newColumns = {
+                      ...BOARD_CONTENTS.columns,
+                      [column.id]: {
+                        ...BOARD_CONTENTS.columns[column.id],
+                        title: columnTitle,
+                      },
+                    };
+                    setBOARD_CONTENTS({
+                      ...BOARD_CONTENTS,
+                      columns: newColumns,
+                    });
+                    setIsTaskEditing(false);
+                  }
+                }}
               />
-              <input
+              {/* <input
                 type="button"
                 value="수정완료"
                 onClick={() => {
@@ -101,17 +167,37 @@ function Column({
                   setBOARD_CONTENTS({ ...BOARD_CONTENTS, columns: newColumns });
                   setIsTaskEditing(false);
                 }}
-              />
+              /> */}
             </>
           ) : (
-            <Title
+            <TitleContainer
               {...provided.dragHandleProps}
               onDoubleClick={() => {
                 setIsTaskEditing(true);
               }}
             >
               {columnTitle}
-              <input
+
+              <RemoveContainer
+                onClick={() => {
+                  if (window.confirm('삭제하시겠습니까?')) {
+                    const newColumns = Object.assign(BOARD_CONTENTS.columns);
+                    delete newColumns[column.id];
+
+                    const newColumnsOrder = BOARD_CONTENTS.columnOrder.filter(
+                      (columnId) => columnId !== column.id,
+                    );
+                    setBOARD_CONTENTS({
+                      ...BOARD_CONTENTS,
+                      columns: newColumns,
+                      columnOrder: newColumnsOrder,
+                    });
+                  }
+                }}
+              >
+                <DeleteIcon />
+              </RemoveContainer>
+              {/* <input
                 type="button"
                 value="column 삭제"
                 onClick={() => {
@@ -127,8 +213,8 @@ function Column({
                     columnOrder: newColumnsOrder,
                   });
                 }}
-              />
-            </Title>
+              /> */}
+            </TitleContainer>
           )}
           <Droppable
             // direction={"horizontal"}
@@ -153,14 +239,23 @@ function Column({
                 ))}
                 {provided.placeholder}
                 {!isTaskAdding ? (
-                  <input
-                    type="button"
-                    value="task 추가"
-                    onClick={() => {
-                      setIsTaskAdding(true);
-                    }}
-                  />
+                  <Tooltip
+                    title="Add"
+                    aria-label="add"
+                    onClick={() => setIsTaskAdding(true)}
+                  >
+                    <IconButton className={classes.icon} aria-label="add">
+                      <AddIcon />
+                    </IconButton>
+                  </Tooltip>
                 ) : (
+                  // <input
+                  //   type="button"
+                  //   value="task 추가"
+                  //   onClick={() => {
+                  //     setIsTaskAdding(true);
+                  //   }}
+                  // />
                   <>
                     <InputContainer
                       value={newTaskContent}

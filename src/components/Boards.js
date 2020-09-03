@@ -23,22 +23,32 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexGrow: 1,
     margin: theme.spacing(5),
+    overflow: 'auto',
   },
   paper: {
     margin: 5,
     // padding: theme.spacing(2),
-    width: theme.spacing(16),
-    height: theme.spacing(16),
+    width: theme.spacing(30),
+    height: theme.spacing(30),
     textAlign: 'center',
-    color: theme.palette.text.secondary,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    display: 'flex',
+    fontSize: 25,
+    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    color: 'white',
   },
   active: {
     color: 'white',
   },
   inactive: {
     color: 'white',
+    textDecoration: 'none',
   },
-  fab: {
+  absolute: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(3),
     background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
   },
 }));
@@ -72,17 +82,15 @@ function Boards({ setPageTitle, BOARDS_DATA, setBOARDS_DATA }) {
         ))}
 
         <div>
-          <Paper elevation={0} className={classes.paper}>
-            <Tooltip
-              title="Add"
-              aria-label="add"
-              onClick={() => setIsBoardAdding(true)}
-            >
-              <Fab className={classes.fab}>
-                <AddIcon />
-              </Fab>
-            </Tooltip>
-          </Paper>
+          <Tooltip
+            title="Add"
+            aria-label="add"
+            onClick={() => setIsBoardAdding(true)}
+          >
+            <Fab className={classes.absolute}>
+              <AddIcon />
+            </Fab>
+          </Tooltip>
           <Dialog
             open={isBoardAdding}
             onClose={() => {

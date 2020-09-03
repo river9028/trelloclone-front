@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     display: 'flex',
     fontSize: 25,
-    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    background: 'linear-gradient(45deg, #3ac569 30%, #cff09e 90%)',
     color: 'white',
   },
   active: {
@@ -49,7 +49,15 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     bottom: theme.spacing(2),
     right: theme.spacing(3),
-    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    background: 'linear-gradient(45deg, #3ac569 30%, #cff09e 90%)',
+  },
+  textfield: {
+    '& label.Mui-focused': {
+      color: '#3ac569',
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: '#3ac569',
+    },
   },
 }));
 
@@ -74,7 +82,12 @@ function Boards({ setPageTitle, BOARDS_DATA, setBOARDS_DATA }) {
               className={classes.inactive}
               activeClassName={classes.active}
             >
-              <Paper elevation={5} className={classes.paper}>
+              <Paper
+                elevation={5}
+                className={classes.paper}
+                title={board.title}
+                aria-label={board.title}
+              >
                 {board.title}
               </Paper>
             </NavLink>
@@ -98,7 +111,7 @@ function Boards({ setPageTitle, BOARDS_DATA, setBOARDS_DATA }) {
             }}
             aria-labelledby="form-dialog-title"
           >
-            <DialogTitle style={{ color: '#f50057' }} id="form-dialog-title">
+            <DialogTitle style={{ color: '#3ac569' }} id="form-dialog-title">
               New Board
             </DialogTitle>
             <DialogContent>
@@ -106,7 +119,7 @@ function Boards({ setPageTitle, BOARDS_DATA, setBOARDS_DATA }) {
                 새로 만들 보드의 제목을 입력하세요
               </DialogContentText>
               <TextField
-                color="secondary"
+                className={classes.textfield}
                 autoFocus
                 margin="dense"
                 id="name"
@@ -117,11 +130,14 @@ function Boards({ setPageTitle, BOARDS_DATA, setBOARDS_DATA }) {
               />
             </DialogContent>
             <DialogActions>
-              <Button color="secondary" onClick={() => setIsBoardAdding(false)}>
+              <Button
+                style={{ color: '#3ac569' }}
+                onClick={() => setIsBoardAdding(false)}
+              >
                 Cancel
               </Button>
               <Button
-                color="secondary"
+                style={{ color: '#3ac569' }}
                 onClick={() => {
                   const regex = / /gi;
                   const newBoardTitleId = newBoardTitle
@@ -135,7 +151,6 @@ function Boards({ setPageTitle, BOARDS_DATA, setBOARDS_DATA }) {
                     },
                   ]);
                   setIsBoardAdding(false);
-
                   setIsBoardAdding(false);
                 }}
               >

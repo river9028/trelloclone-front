@@ -2,16 +2,32 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 
+import Paper from '@material-ui/core/Paper';
+import { withStyles } from '@material-ui/core/styles';
+
 import Task from './Task';
 import connect from '../containers/connect';
+
+const CssPaper = withStyles({
+  root: {
+    margin: 8,
+    border: 1,
+    background: 'white',
+    borderRadius: 2,
+    minWidth: 300,
+    maxWidth: 300,
+    display: 'flex',
+    flexDirection: 'column',
+  },
+})(Paper);
 
 const Container = styled.div`
   margin: 8px;
   border: 1px solid lightgrey;
   background-color: white;
   border-radius: 2px;
-  width: 220px;
-
+  min-width: 300px;
+  max-width: 300px;
   display: flex;
   flex-direction: column;
 `;
@@ -57,7 +73,11 @@ function Column({
   return (
     <Draggable draggableId={column.id} index={index}>
       {(provided, snapshot) => (
-        <Container {...provided.draggableProps} ref={provided.innerRef}>
+        <CssPaper
+          elevation={3}
+          {...provided.draggableProps}
+          ref={provided.innerRef}
+        >
           {isTaskEditing ? (
             <>
               <InputContainer
@@ -197,7 +217,7 @@ function Column({
               </TaskList>
             )}
           </Droppable>
-        </Container>
+        </CssPaper>
       )}
     </Draggable>
   );

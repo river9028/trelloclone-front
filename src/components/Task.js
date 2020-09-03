@@ -21,8 +21,8 @@ const Container = styled.div`
     props.isDragDisabled
       ? 'lightgrey'
       : props.isDragging
-      ? 'lightgreen'
-      : 'white'};
+      ? '#fffff5'
+      : '#C5E99B'};
   // width: 40px;
   // height: 40px;
 
@@ -32,7 +32,7 @@ const Container = styled.div`
 
   &:focus {
     outline: none;
-    border-color: red;
+    border-color: #a8dba8;
   }
 `;
 
@@ -42,12 +42,6 @@ const InputContainer = styled.input`
   // border-radius: 2px;
   padding: 8px;
   margin-bottom: 8px;
-  background-color: ${(props) =>
-    props.isDragDisabled
-      ? 'lightgrey'
-      : props.isDragging
-      ? 'lightgreen'
-      : 'white'};
   // width: 40px;
   // height: 40px;
 
@@ -57,7 +51,7 @@ const InputContainer = styled.input`
 
   &:focus {
     outline: none;
-    border-color: red;
+    border-color: #a8dba8;
   }
 `;
 

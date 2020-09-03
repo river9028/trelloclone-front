@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
@@ -12,6 +12,13 @@ import IconButton from '@material-ui/core/IconButton';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import SettingsIcon from '@material-ui/icons/Settings';
 import DeleteIcon from '@material-ui/icons/Delete';
+
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 import connect from '../containers/connect';
 
@@ -81,6 +88,8 @@ function Menu({
   const classes = useStyles();
   const params = useParams();
   const history = useHistory();
+  const [open, setOpen] = useState(false);
+
   const [selectedBoard] = BOARDS_DATA.filter(
     (board) => board.id === params.board_id,
   );
@@ -138,19 +147,45 @@ function Menu({
                     {pageTitle}
                   </Typography>
                   {selectedBoard && (
-                    <RemoveContainer
-                      onClick={() => {
-                        if (window.confirm('삭제하시겠습니까?')) {
-                          const newBOARDS_DATA = BOARDS_DATA.filter(
-                            (board) => board.id !== params.board_id,
-                          );
-                          setBOARDS_DATA(newBOARDS_DATA);
-                          aceessNewPage();
-                        }
-                      }}
-                    >
-                      <DeleteIcon />
-                    </RemoveContainer>
+                    <>
+                      <RemoveContainer onClick={() => setOpen(true)}>
+                        <DeleteIcon />
+                      </RemoveContainer>
+
+                      <Dialog
+                        open={open}
+                        onClose={() => setOpen(false)}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                      >
+                        <DialogTitle id="alert-dialog-title">
+                          {'선택한 Board를 삭제하시겠습니까?'}
+                        </DialogTitle>
+                        <DialogActions>
+                          <Button
+                            style={{ color: '#3ac569' }}
+                            onClick={() => {}}
+                            color="primary"
+                          >
+                            No
+                          </Button>
+                          <Button
+                            style={{ color: '#3ac569' }}
+                            onClick={() => {
+                              const newBOARDS_DATA = BOARDS_DATA.filter(
+                                (board) => board.id !== params.board_id,
+                              );
+                              setBOARDS_DATA(newBOARDS_DATA);
+                              aceessNewPage();
+                            }}
+                            color="primary"
+                            autoFocus
+                          >
+                            Yes
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                    </>
                   )}
                 </TitleContainer>
               </div>
